@@ -16,7 +16,7 @@ jobs:
       - name: Run Script
         run: |-
           Rscript -e "install.packages(c('renv','pacman', 'devtools'))"
-          Rscript -e "devtools::install_github("tylermorganwall/rayvertex")"
+          Rscript -e "devtools::install_github('tylermorganwall/rayvertex')"
           Rscript -e '#renv::consent(provided = TRUE)'
           Rscript -e "#renv::restore()"
           Rscript -e "source('script.R')"
