@@ -77,3 +77,28 @@ generate_cornell_mesh(ceiling=FALSE) %>%
 dev.off()
 
 
+## TEST 4 SCENE
+
+png("test_rayvertex_4.png")
+
+base_model = cube_mesh() %>%
+  scale_mesh(scale=c(5,0.2,5)) %>%
+  translate_mesh(c(0,-0.1,0)) %>%
+  set_material(diffuse="white")
+
+r_model = obj_mesh(r_obj()) %>%
+  scale_mesh(scale=0.5) %>%
+  set_material(diffuse="red") %>%
+  add_shape(base_model)
+
+lights = directional_light(c(0.7,1.1,-0.9),color = "orange",intensity = 0.7) %>%
+  add_light(directional_light(c(0.7,1,1),color = "dodgerblue",intensity = 0.7)) %>%
+  add_light(directional_light(c(2,4,10),color = "white",intensity = 0.3))
+
+rasterize_scene(r_model, lookfrom=c(2,4,10),fov=20,
+                light_info = directional_light(direction=c(0.8,1,0.7)))
+#> Setting `lookat` to: c(0.00, 0.34, 0.00)
+
+# Save image
+dev.off()
+
