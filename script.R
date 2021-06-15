@@ -17,3 +17,6 @@ generate_cornell_mesh() %>%
 # Save image
 dev.off()
 
+
+# ANY WAY TO USE rayvertex FOR GGPLOTS? CAN IT BE ADDED TO LONG TUTORIAL TO PART THAT DOESN'T UPDATE?
+
