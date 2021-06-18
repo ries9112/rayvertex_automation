@@ -17,7 +17,7 @@ jobs:
         run: |-
           Rscript -e 'renv::consent(provided = TRUE)'
           Rscript -e "renv::restore()"
-          Rscript -e "install.packages('Rvcg')"
+          Rscript -e "#install.packages('Rvcg')"
           Rscript -e "source('script.R')"
       - name: Commit and push files
         run: |

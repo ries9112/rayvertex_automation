@@ -102,3 +102,31 @@ rasterize_scene(r_model, lookfrom=c(2,4,10),fov=20,
 # Save image
 dev.off()
 
+
+
+## TEST 5 SCENE (WITH CHART)
+# Make plot
+tempfileplot = tempfile()
+png(filename=tempfileplot,height=1600,width=1600)
+plot(iris$Petal.Length,iris$Sepal.Width,col=iris$Species,pch=18,cex=12)
+dev.off()
+# Make scene
+image_array = png::readPNG(tempfileplot)
+
+generate_cornell() %>%
+  add_object(ellipsoid(x=555/2,y=100,z=555/2,a=50,b=100,c=50, material = metal(color="lightblue"))) %>%
+  add_object(cube(x=100,y=130/2,z=200,xwidth = 130,ywidth=130,zwidth = 130,
+                  material=diffuse(checkercolor="purple", checkerperiod = 30),angle=c(0,10,0))) %>%
+  add_object(pig(x=100,y=190,z=200,scale=40,angle=c(0,30,0))) %>%
+  add_object(sphere(x=420,y=555/8,z=100,radius=555/8,
+                    material = dielectric(color="orange"))) %>%
+  add_object(yz_rect(x=0.01,y=300,z=555/2,zwidth=400,ywidth=400,
+                     material = diffuse(image_texture = image_array))) %>%
+  add_object(yz_rect(x=555/2,y=300,z=555-0.01,zwidth=400,ywidth=400,
+                     material = diffuse(image_texture = image_array),angle=c(0,90,0))) %>%
+  add_object(yz_rect(x=555-0.01,y=300,z=555/2,zwidth=400,ywidth=400,
+                     material = diffuse(image_texture = image_array),angle=c(0,180,0))) %>%
+  render_scene(lookfrom=c(278,278,-800),lookat = c(278,278,0), aperture=0, fov=40,  samples = 1000,
+               ambient_light=FALSE, parallel=TRUE, width=800, height=800, clamp_value = 5)
+
+
