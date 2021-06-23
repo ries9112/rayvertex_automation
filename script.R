@@ -157,7 +157,8 @@ dev.off()
 
 
 
-## TEST 5 RAYSHADER (plot_gg)
+## TEST 6 RAYSHADER (plot_gg)
+png("test_rayvertex_6.png")
 library(rayshader)
 library(ggplot2)
 ggdiamonds = ggplot(diamonds) +
@@ -173,7 +174,8 @@ plot_gg(ggdiamonds, width = 5, height = 5, multicore = TRUE, scale = 250,
         zoom = 0.7, theta = 10, phi = 30, windowsize = c(800, 800))
 Sys.sleep(0.2)
 render_snapshot(clear = TRUE)
-
+# Save image
+dev.off()
 
 
 
