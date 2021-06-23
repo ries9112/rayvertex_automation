@@ -113,20 +113,71 @@ dev.off()
 # Make scene
 image_array = png::readPNG(tempfileplot)
 
-generate_cornell() %>%
-  add_object(ellipsoid(x=555/2,y=100,z=555/2,a=50,b=100,c=50, material = metal(color="lightblue"))) %>%
-  add_object(cube(x=100,y=130/2,z=200,xwidth = 130,ywidth=130,zwidth = 130,
-                  material=diffuse(checkercolor="purple", checkerperiod = 30),angle=c(0,10,0))) %>%
-  add_object(pig(x=100,y=190,z=200,scale=40,angle=c(0,30,0))) %>%
-  add_object(sphere(x=420,y=555/8,z=100,radius=555/8,
-                    material = dielectric(color="orange"))) %>%
-  add_object(yz_rect(x=0.01,y=300,z=555/2,zwidth=400,ywidth=400,
-                     material = diffuse(image_texture = image_array))) %>%
-  add_object(yz_rect(x=555/2,y=300,z=555-0.01,zwidth=400,ywidth=400,
-                     material = diffuse(image_texture = image_array),angle=c(0,90,0))) %>%
-  add_object(yz_rect(x=555-0.01,y=300,z=555/2,zwidth=400,ywidth=400,
-                     material = diffuse(image_texture = image_array),angle=c(0,180,0))) %>%
-  render_scene(lookfrom=c(278,278,-800),lookat = c(278,278,0), aperture=0, fov=40,  samples = 1000,
-               ambient_light=FALSE, parallel=TRUE, width=800, height=800, clamp_value = 5)
+# initialize model (none of these steps working)
+new_model = cube_mesh() %>%
+  scale_mesh(scale=c(5,0.2,5)) %>%
+  translate_mesh(c(0,-0.1,0)) %>%
+  set_material(diffuse="test.png")
+
+
+
+generate_cornell_mesh() %>%
+  # add_shape(ellipsoid(x=555/2,y=100,z=555/2,a=50,b=100,c=50, material = metal(color="lightblue"))) %>%
+  # add_shape(cube(x=100,y=130/2,z=200,xwidth = 130,ywidth=130,zwidth = 130,
+  #                 material=diffuse(checkercolor="purple", checkerperiod = 30),angle=c(0,10,0))) %>%
+  # add_shape(pig(x=100,y=190,z=200,scale=40,angle=c(0,30,0))) %>%
+  # add_shape(sphere(x=420,y=555/8,z=100,radius=555/8,
+  #                   material = dielectric(color="orange"))) %>%
+  add_shape(new_model) %>% 
+                         
+                     # material = diffuse(image_texture = image_array))) %>%
+  # add_shape(yz_rect(x=555/2,y=300,z=555-0.01,zwidth=400,ywidth=400,
+  #                    material = diffuse(image_texture = image_array),angle=c(0,90,0))) %>%
+  # add_shape(yz_rect(x=555-0.01,y=300,z=555/2,zwidth=400,ywidth=400,
+  #                    material = diffuse(image_texture = image_array),angle=c(0,180,0))) %>%
+  rasterize_scene(lookfrom=c(278,278,-800),lookat = c(278,278,0), fov=40,
+               parallel=TRUE, width=800, height=800)
+
+
+
+# Cleaned up version:
+generate_cornell_mesh() %>%
+  add_shape(yz_rect_mesh(position=c(555,555,555)/2,
+                         material = material_list(diffuse = "red"))) %>% 
+  rasterize_scene(lookfrom=c(278,278,-800),lookat = c(278,278,0), fov=40,
+                  parallel=TRUE, width=800, height=800)
+
+
+
+# initialize model (not working) 
+new_model = rayvertex::obj_mesh("models/uploads_files_2939767_Trawa.obj", material = "models/uploads_files_2939767_Trawa.mtl") %>%
+  scale_mesh(scale=c(5,0.2,5)) %>%
+  translate_mesh(c(0,-0.1,0))
+
+
+
+
+## TEST 5 RAYSHADER (plot_gg)
+library(rayshader)
+library(ggplot2)
+ggdiamonds = ggplot(diamonds) +
+  stat_density_2d(aes(x = x, y = depth, fill = stat(nlevel)),
+                  geom = "polygon", n = 100, bins = 10, contour = TRUE) +
+  facet_wrap(clarity~.) +
+  scale_fill_viridis_c(option = "A")
+
+par(mfrow = c(1, 2))
+
+plot_gg(ggdiamonds, width = 5, height = 5, raytrace = FALSE, preview = TRUE)
+plot_gg(ggdiamonds, width = 5, height = 5, multicore = TRUE, scale = 250,
+        zoom = 0.7, theta = 10, phi = 30, windowsize = c(800, 800))
+Sys.sleep(0.2)
+render_snapshot(clear = TRUE)
+
+
+
+
+
+
 
 
