@@ -19,7 +19,7 @@ jobs:
           Rscript -e "renv::restore()"
           Rscript -e "install.packages('Rvcg')"
           Rscript -e "install.packages('ggplot2')"
-          Rscript -e "devtools::install_github("tylermorganwall/rayshader")"
+          Rscript -e "devtools::install_github('tylermorganwall/rayshader')"
           Rscript -e "source('script.R')"
       - name: Commit and push files
         run: |
