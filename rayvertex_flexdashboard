@@ -1,0 +1,69 @@
+---
+title: "Test Rayvertex Shinyapp"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: spacelab
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(rayvertex)
+library(magick)
+library(magrittr)
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+Shinyapp with rayvertex test
+
+```{r}
+sliderInput("radius", label = "Radius of object:",
+            min = 0, max = 200, value = 80, step = 0.2)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Show rayvertex Results
+
+```{r}
+
+
+renderImage({
+  
+
+# initialize image
+png("test_rayvertex.png")
+
+# Example script
+generate_cornell_mesh() %>% 
+  rasterize_scene()
+
+mat = material_list(diffuse="purple", type = "phong", ambient="purple", ambient_intensity = 0.2)
+
+generate_cornell_mesh() %>% 
+  add_shape(sphere_mesh(position=c(555,555,555)/2, radius=input$radius, material=mat)) %>% 
+  rasterize_scene()
+
+
+# Save image
+dev.off()
+
+# Read image into view
+tmpfile <- image_read('test_rayvertex.png') %>% 
+    image_write(tempfile(fileext='jpg'), format = 'jpg')
+  
+  # Return a list
+  list(src = tmpfile, contentType = "image/jpeg")
+
+})
+```
+
+
+
